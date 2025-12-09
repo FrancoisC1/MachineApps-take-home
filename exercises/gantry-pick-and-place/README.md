@@ -14,12 +14,13 @@ You must simulate a "Pick and Place" sequence: picking a cube from **Table A** a
 
 **Backend (Python & FastAPI)**
 
-  - [ ] **State Machine Integration:** Implement the robot's control logic using the [`vention-state-machine`](https://www.google.com/search?q=%5Bhttps://pypi.org/project/vention-state-machine/0.3.1/%5D\(https://pypi.org/project/vention-state-machine/0.3.1/\)) library.
+  - [ ] **State Machine Integration:** Implement the robot's control logic using the [`vention-state-machine`](https://pypi.org/project/vention-state-machine/) library.
   - [ ] **Robot Simulation:** Interface with the provided `robot_sim.py` class.
       - *Note:* The `move_to` method must be called repeatedly until motion is complete. This should be handled inside your state machine callbacks.
   - [ ] **API Endpoints:** Create endpoints to:
       - Get/Set robot, cube, and destination positions.
       - specific commands: `Home Robot`, `Start Sequence`, `Get Status`.
+      - *Note:* The "Home" operation moves the robot to its home position (default: `[0, 0, 0]`). Review `robot_sim.py` to understand the `move_home()` method and the `home_position` parameter.
   - [ ] **Logic:** Implement the full Pick-and-Place sequence:
     1.  Move to Cube (Table A) $\rightarrow$ Lower $\rightarrow$ Close Gripper.
     2.  Lift $\rightarrow$ Move to Destination (Table B).
@@ -34,13 +35,13 @@ You must simulate a "Pick and Place" sequence: picking a cube from **Table A** a
       - Current State of the State Machine.
   - [ ] **Controls:** Allow the user to:
       - Configure the Cube's start coordinates and destination coordinates.
-      - Trigger the "Home" operation.
+      - Trigger the "Home" operation (moves robot to home position, default: `[0, 0, 0]`).
       - Start the "Pick and Place" sequence.
   - [ ] **Visuals:** Provide a clear visual indication of errors and operational state.
 
 ### **Bonus Points**
 
-  - [ ] **Persistence:** Use [`vention-storage`](https://www.google.com/search?q=%5Bhttps://pypi.org/project/vention-storage/0.5.4/%5D\(https://pypi.org/project/vention-storage/0.5.4/\)) to save configuration (e.g., cube locations) between restarts.
+  - [ ] **Persistence:** Use [`vention-storage`](https://pypi.org/project/vention-storage/) to save configuration (e.g., cube locations) between restarts.
   - [ ] **Testing:** Write unit tests for the backend logic or component tests for the frontend.
   - [ ] **Containerization:** Run the whole stack (Backend + Frontend) with a single command (e.g., Docker Compose).
   - [ ] **Demo:** Include a short video recording of your solution in action.
