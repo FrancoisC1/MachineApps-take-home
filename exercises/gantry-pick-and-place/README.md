@@ -14,6 +14,7 @@ You must simulate a "Pick and Place" sequence: picking a cube from **Table A** a
 
 **Backend (Python & FastAPI)**
 
+  - [ ] **Communication Framework:** Use the [`vention-communication`](https://pypi.org/project/vention-communication/) library to establish communication between the frontend and backend.
   - [ ] **State Machine Integration:** Implement the robot's control logic using the [`vention-state-machine`](https://pypi.org/project/vention-state-machine/) library.
   - [ ] **Robot Simulation:** Interface with the provided `robot_sim.py` class.
       - *Note:* The `move_to` method must be called repeatedly until motion is complete. This should be handled inside your state machine callbacks.
@@ -55,7 +56,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-# Requirements include: fastapi, vention-state-machine==0.3.1, vention-storage==0.5.4
+# Requirements include: fastapi, vention-communication==0.3.0, vention-state-machine==0.3.1, vention-storage==0.5.4
 ```
 
 **Frontend Setup**
