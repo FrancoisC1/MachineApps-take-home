@@ -15,6 +15,8 @@ class Robot:
 
     def set_home_position(self, position: list[float]):
         self._robot_sim.home_position = position
+        # Force a motion replan
+        self._robot_sim.axis_speed = [0, 0, 0]
 
     def get_home_position(self) -> list[float]:
         return self._robot_sim.home_position
@@ -26,16 +28,21 @@ class Robot:
         return self._robot_sim.gripper_state is GripperState.OPEN
 
     async def move_to_home_position(self):
-        await self._move_to_position(
-            position=self._robot_sim.home_position,
-            speed=HOME_MOVEMENT_SPEED,
-        )
+        while self._robot_sim.current_position != self._robot_sim.home_position:
+            move_result = self._robot_sim.move_home(speed=HOME_MOVEMENT_SPEED)
+            if move_result.error:
+                raise RuntimeError(move_result.error)
+            await asyncio.sleep(MOVEMENT_PERIOD_SEC)
 
     async def move_to_position(self, position: list[float]):
-        await self._move_to_position(
-            position=position,
-            speed=REGULAR_MOVEMENT_SPEED,
-        )
+        while self._robot_sim.current_position != position:
+            move_result = self._robot_sim.move_to(
+                target_position=position,
+                speed=REGULAR_MOVEMENT_SPEED,
+            )
+            if move_result.error:
+                raise RuntimeError(move_result.error)
+            await asyncio.sleep(MOVEMENT_PERIOD_SEC)
 
     async def open_gripper(self):
         await asyncio.sleep(GRIPPER_ACTION_DELAY_SEC)
@@ -44,13 +51,3 @@ class Robot:
     async def close_gripper(self):
         await asyncio.sleep(GRIPPER_ACTION_DELAY_SEC)
         self._robot_sim.closed_gripper()
-
-    async def _move_to_position(self, position: list[float], speed: int):
-        while self._robot_sim.current_position != position:
-            move_result = self._robot_sim.move_to(
-                target_position=position,
-                speed=speed,
-            )
-            if move_result.error:
-                raise RuntimeError(move_result.error)
-            await asyncio.sleep(MOVEMENT_PERIOD_SEC)
