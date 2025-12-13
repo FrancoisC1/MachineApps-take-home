@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    volumes:
+      - proto-volume:/app/proto
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/proto/robot_control.proto"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - proto-volume:/backend/proto
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000/rpc
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  proto-volume:
