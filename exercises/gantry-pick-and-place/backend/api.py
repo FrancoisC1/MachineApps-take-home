@@ -6,6 +6,7 @@ import uvicorn
 from communication.app import VentionApp
 from communication.decorators import action, stream
 from fastapi import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from starlette.status import HTTP_409_CONFLICT
 from transitions import MachineError
@@ -63,6 +64,16 @@ app = VentionApp(
     emit_proto=True,
     proto_path="proto/robot_control.proto",
     lifespan=_lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
