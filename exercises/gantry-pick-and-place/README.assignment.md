@@ -92,7 +92,7 @@ The robot simulator requires repeated calls to `move_to()` until motion complete
 Pydantic models combined with Shapely geometric validation ensure that cube positions remain within table boundaries.
 
 ### Deferred Cube Position Updates
-Once the robot begins moving toward a cube or destination, any changes to those target positions are deferred. The new positions are stored in `next_*` variables and only applied when starting the next sequence.
+Once the robot is positioned above the cube or destination, any changes to those target positions are deferred. The new positions are stored in `next_*` variables and applied while the robot moves to position itself above the target, but once positioned, the coordinates are locked for all subsequent vertical operations in that sequence.
 
 ### Home Interrupt Handling
 When a "Move Home" command is issued during an active sequence, the system sets a flag (`_move_home_requested`) and waits for the current operation to complete before transitioning to the home state. This ensures the robot completes its current sub-task (e.g., closing gripper) before interrupting.
