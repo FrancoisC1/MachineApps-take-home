@@ -177,13 +177,16 @@ class RobotStateMachine(StateMachine):
     @on_enter_state(States.picking.moving)
     def _move_above_cube(self, _):
         async def move_above_cube():
-            await self.robot.move_to_position(
-                [
+            # This loop performs the move and handles next_cube_start_position updates
+            while True:
+                target_position: list[float] = [
                     self.next_cube_start_position.x,
                     self.next_cube_start_position.y,
                     LIFTING_HEIGHT_ABOVE_TABLE,
                 ]
-            )
+                if self.robot.get_current_position() == target_position:
+                    break
+                await self.robot.move_to_position(target_position)
             self._cube_start_position = self.next_cube_start_position
             self._change_state(Triggers.finished_moving_above_cube)
 
@@ -222,13 +225,16 @@ class RobotStateMachine(StateMachine):
     @on_enter_state(States.transporting.moving)
     def _move_above_destination(self, _):
         async def move_above_destination():
-            await self.robot.move_to_position(
-                [
+            # This loop performs the move and handles next_cube_end_position updates
+            while True:
+                target_position: list[float] = [
                     self.next_cube_end_position.x,
                     self.next_cube_end_position.y,
                     LIFTING_HEIGHT_ABOVE_TABLE,
                 ]
-            )
+                if self.robot.get_current_position() == target_position:
+                    break
+                await self.robot.move_to_position(target_position)
             self._cube_end_position = self.next_cube_end_position
             self._change_state(Triggers.finished_moving_above_destination)
 
@@ -268,7 +274,9 @@ class RobotStateMachine(StateMachine):
     def _move_home(self, _):
         async def move_home():
             self._move_home_requested = False
-            await self.robot.move_to_home_position()
+            # This loop performs the move and handles home position updates
+            while self.robot.get_current_position() != self.robot.get_home_position():
+                await self.robot.move_to_home_position()
             self._change_state(Triggers.finished_moving_to_home)
 
         self.spawn(move_home())
